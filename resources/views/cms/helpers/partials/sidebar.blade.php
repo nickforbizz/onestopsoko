@@ -78,6 +78,13 @@
 					</a>
 				</li>
 
+				<li class="nav-item @if(Route::is('clients.*')) active @endif">
+					<a href="{{ route('clients.index') }}">
+						<i class="far fa-edit"></i>
+						<p> Clients</p>
+					</a>
+				</li>
+
 				<li class="nav-item @if(Route::is('reports.*')) active @endif">
 					<a href="{{ route('reports.index') }}">
 						<i class="far fa-edit"></i>
