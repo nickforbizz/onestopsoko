@@ -14,6 +14,7 @@ use App\Http\Controllers\cms\ProductCategoryController;
 use App\Http\Controllers\cms\ProductController;
 use App\Http\Controllers\cms\ReportController;
 use App\Http\Controllers\cms\RoleController;
+use App\Http\Controllers\cms\SaleController;
 use App\Http\Controllers\cms\SearchController;
 use App\Http\Controllers\cms\SupplierController;
 use App\Http\Controllers\frontend\ViewsController;
@@ -101,6 +102,7 @@ Route::middleware('cms')->group(function () {
         'clients' => ClientController::class,
         'customerrequests' => CustomerRequestController::class,
         'inventories' => InventoryController::class,
+        'sales' => SaleController::class,
 
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
