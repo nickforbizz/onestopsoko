@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\cms;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
-use App\Models\Permission;
-use App\Models\Role;
-
+use App\Models\Supplier;
+use App\Http\Requests\StoreSupplierRequest;
+use App\Http\Requests\UpdateSupplierRequest;
 use Illuminate\Http\Request;
+
 use DataTables;
 
-class RoleController extends Controller
+class SupplierController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,43 +18,42 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         // return datatable of the makes available
-        $data = Role::orderBy('created_at', 'desc')->get();
+        $data = Supplier::orderBy('created_at', 'desc')->get();
         if ($request->ajax()) {
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {
                     return date_format($row->created_at, 'Y/m/d H:i');
                 })
-                ->editColumn('created_by', function ($row) {
-                    return isset($row->created_by) ? $row?->user?->email : 'N/A';
-                })
                 ->addColumn('action', function ($row) {
                     $btn_edit = $btn_del = null;
-                    if (auth()->user()->hasRole('superadmin')) {
+                    if (auth()->user()->hasAnyRole('superadmin|admin|editor') || auth()->id() == $row->created_by) {
                         $btn_edit = '<a data-toggle="tooltip" 
-                                    href="' . route('roles.edit', $row->id) . '" 
-                                    class="btn btn-link btn-primary btn-lg" 
-                                    data-original-title="Edit Record">
-                                <i class="fa fa-edit"></i>
-                            </a>';
+                                        href="' . route('suppliers.edit', $row->id) . '" 
+                                        class="btn btn-link btn-primary btn-lg" 
+                                        data-original-title="Edit Record">
+                                    <i class="fa fa-edit"></i>
+                                </a>';
+                    }
 
+                    if (auth()->user()->hasRole('superadmin')) {
                         $btn_del = '<button type="button" 
                                     data-toggle="tooltip" 
                                     title="" 
                                     class="btn btn-link btn-danger" 
-                                    onclick="delRecord(`' . $row->id . '`, `' . route('roles.destroy', $row->id) . '`, `#tb_roles`)"
+                                    onclick="delRecord(`' . $row->id . '`, `' . route('suppliers.destroy', $row->id) . '`, `#tb_suppliers`)"
                                     data-original-title="Remove">
                                 <i class="fa fa-times"></i>
                             </button>';
                     }
                     return $btn_edit . $btn_del;
                 })
-                ->rawColumns(['action', 'created_at', 'created_by'])
+                ->rawColumns(['action'])
                 ->make(true);
         }
 
         // render view
-        return view('cms.roles.index');
+        return view('cms.suppliers.index');
     }
 
     /**
@@ -63,69 +61,55 @@ class RoleController extends Controller
      */
     public function create()
     {
-        // render view
-        return view('cms.roles.create');
+        return view('cms.suppliers.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRoleRequest $request)
+    public function store(Request $request)
     {
-dd($request->all());
-        $role = Role::create($request->all());
-        $role->syncPermissions($request->input('permissions'));
-        return redirect()
-            ->route('roles.index')
-            ->with('success', 'Record Created Successfully');
+        Supplier::create($request->all());
+        return redirect()->back()->with('success', 'Record Created Successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Role $role)
+    public function show(Supplier $Supplier)
     {
         return response()
-            ->json($role, 200, ['JSON_PRETTY_PRINT' => JSON_PRETTY_PRINT]);
+            ->json($Supplier, 200, ['JSON_PRETTY_PRINT' => JSON_PRETTY_PRINT]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit(Supplier $supplier)
     {
-        $permissions = Permission::where('active', 1)->get();
-        $role_permissions = $role->permissions()->pluck('name')->toArray();
-        return view('cms.roles.create', compact('role', 'permissions', 'role_permissions'));
+        return view('cms.suppliers.create', compact('supplier'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(Request $request, Supplier $Supplier)
     {
-        $permissions_arr = $request->input('permissions');
-        $permissions = Permission::whereIn('name',  $permissions_arr)->get();
 
-
-        $role->syncPermissions([]);
-        foreach ($permissions as $permission) {
-            $role->givePermissionTo($permission->name);
-        }
-        $role->update($request->all());
+        $Supplier->update($request->all());
 
         // Redirect the user to the user's profile page
         return redirect()
-            ->route('roles.index')
+            ->route('suppliers.index')
             ->with('success', 'Record updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(Supplier $Supplier)
     {
-        if ($role->delete()) {
+        if ($Supplier->delete()) {
             return response()->json([
                 'code' => 1,
                 'msg' => 'Record deleted successfully'

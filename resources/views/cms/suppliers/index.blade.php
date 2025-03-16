@@ -3,7 +3,7 @@
 @section('content')
 <div class="page-inner">
     <div class="page-header">
-        <h4 class="page-title"> Product Categories </h4>
+        <h4 class="page-title"> Supplier </h4>
         <ul class="breadcrumbs">
             <li class="nav-home">
                 <a href="#">
@@ -14,7 +14,7 @@
                 <i class="flaticon-right-arrow"></i>
             </li>
             <li class="nav-item">
-                <a href="#"> Product Categories</a>
+                <a href="#"> Supplier</a>
             </li>
             <li class="separator">
                 <i class="flaticon-right-arrow"></i>
@@ -32,8 +32,8 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center"> 
                         <h4 class="card-title">List of Available Record(s)</h4>
-                        @can('create product categories')
-                        <a href="{{ route('productCategories.create') }}" class="btn btn-primary btn-round ml-auto" >
+                        @can('create supplier')
+                        <a href="{{ route('suppliers.create') }}" class="btn btn-primary btn-round ml-auto" >
                             <i class="flaticon-add mr-2"></i>
                             Add Row
                         </a> 
@@ -45,13 +45,13 @@
 
                     <div class="table-responsive">
                         @include('cms.helpers.partials.feedback')
-                        <table id="tb_productCategories" class="display table table-striped table-hover">
+                        <table id="tb_suppliers" class="display table table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
-                                    <!-- <th>Description</th> -->
-                                    <th>Created By</th>
+                                    <th>phone</th>
+                                    <th>Location</th>
                                     <th>Created At</th>
                                     <th>Action</th>
                                 </tr>
@@ -73,10 +73,10 @@
 
 <script>
     $(document).ready(function() {
-        $('#tb_productCategories').DataTable({
+        $('#tb_suppliers').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('productCategories.index') }}",
+            ajax: "{{ route('suppliers.index') }}",
             columns: [{
                     data: 'DT_RowIndex',
                     name: 'DT_RowIndex'
@@ -86,7 +86,10 @@
                 },
                 
                 {
-                    data: 'created_by'
+                    data: 'phone'
+                },
+                {
+                    data: 'location'
                 },					
                 {
                     data: 'created_at',
@@ -99,7 +102,7 @@
                 },
             ]
         });
-        // #tb_productCategories
+        // #tb_suppliers
 
        
     });

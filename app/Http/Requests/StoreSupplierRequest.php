@@ -3,19 +3,15 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
-class StoreRoleRequest extends FormRequest
+class StoreSupplierRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = auth()->user();
-        return $user->hasRole('superadmin');
+        return false;
     }
 
     /**
@@ -26,8 +22,11 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'min:2', Rule::unique('roles')],
-            'guard_name' => 'required|min:2',
+            'name' => 'required|min:2',
+            'phone' => 'required|min:2',
+            'email' => 'required|min:2',
+            'location' => 'required|min:2',
+            'post_id' => 'required|exists:posts,id',
         ];
     }
 
@@ -39,16 +38,10 @@ class StoreRoleRequest extends FormRequest
         ];
     }
 
-    protected function prepareForValidation()
-    {
-        // do something before validation
-    }
-
-
     public function passedValidation()
     {
-        // $this->merge([
-        //     'created_by' => Auth::id()
-        // ]);
+        $this->merge([
+            'created_by' => Auth::id()
+        ]);
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\cms\ProductController;
 use App\Http\Controllers\cms\ReportController;
 use App\Http\Controllers\cms\RoleController;
 use App\Http\Controllers\cms\SearchController;
+use App\Http\Controllers\cms\SupplierController;
 use App\Http\Controllers\frontend\ViewsController;
 use App\Http\Controllers\HomeController;
 use App\Models\User;
@@ -51,9 +52,9 @@ Route::get('/optimize', function () {
     return 'done';
 });
 
-Route::get('/flush-perms', function () {
+Route::get('/flushperms', function () {
     Artisan::call('permission:cache-reset');
-    // return what you want
+    return 'done';
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
@@ -93,6 +94,8 @@ Route::middleware('cms')->group(function () {
         'postCategories' => PostCategoryController::class,
         'products' => ProductController::class,
         'productCategories' => ProductCategoryController::class,
+        'suppliers' => SupplierController::class,
+
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
         'assignRoles' => AssignRoleController::class,

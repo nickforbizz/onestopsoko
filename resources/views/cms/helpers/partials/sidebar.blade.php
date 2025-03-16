@@ -71,6 +71,13 @@
 					</a>
 				</li>
 
+				<li class="nav-item @if(Route::is('suppliers.*')) active @endif">
+					<a href="{{ route('suppliers.index') }}">
+						<i class="far fa-edit"></i>
+						<p> Supplier</p>
+					</a>
+				</li>
+
 				<li class="nav-item @if(Route::is('reports.*')) active @endif">
 					<a href="{{ route('reports.index') }}">
 						<i class="far fa-edit"></i>

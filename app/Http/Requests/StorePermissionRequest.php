@@ -46,8 +46,8 @@ class StorePermissionRequest extends FormRequest
 
     public function passedValidation()
     {
-        $this->merge([
-            'created_by' => Auth::id()
-        ]);
+        // $this->merge([
+        //     'created_by' => Auth::id()
+        // ]);
     }
 }
