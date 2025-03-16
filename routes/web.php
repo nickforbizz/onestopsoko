@@ -42,7 +42,6 @@ Route::get('/test', function () {
 });
 
 
-
 Route::get('/optimize', function () {
     Artisan::call('cache:clear');
     Artisan::call('config:clear');
@@ -87,7 +86,6 @@ Route::middleware('cms')->group(function () {
     Route::get('reports/download/csv', [ReportController::class, 'downloadCsv'])->name('reports.download.csv');
 
 
-
     // Resources Routes
     Route::resources([
         'users' => UserController::class,
@@ -97,7 +95,6 @@ Route::middleware('cms')->group(function () {
         'productCategories' => ProductCategoryController::class,
         'suppliers' => SupplierController::class,
         'clients' => ClientController::class,
-
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
         'assignRoles' => AssignRoleController::class,

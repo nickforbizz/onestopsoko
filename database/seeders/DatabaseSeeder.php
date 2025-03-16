@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductSeeder::class);
         $this->call(CommentSeeder::class);
         $this->call(GuardSeeder::class);
+        $this->call(PermissionTableSeeder::class);
 
-        
     }
 }

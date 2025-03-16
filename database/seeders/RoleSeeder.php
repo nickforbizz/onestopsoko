@@ -15,25 +15,13 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
 
-        // --------------- Superadmin Role -------------------
-        Role::create(['name' => 'superadmin']);
-        // Get all permissions
-        $permissions = Permission::pluck('name');
+        $roles = ['superadmin', 'admin', 'writer', 'user'];
 
-        // Give all permissions to the superadmin role
-        Role::findByName('superadmin')->givePermissionTo($permissions);
+        collect($roles)->each(fn($role) => Role::create(['name' => $role]));
 
+        if ($permissions = Permission::pluck('name')->toArray()) {
+            Role::findByName('superadmin')->givePermissionTo($permissions);
+        }
 
-        // --------------- Admin Role -------------------------------
-        Role::create(['name' => 'admin']);
-
-
-        // --------------- Writer Role -------------------------------
-        Role::create(['name' => 'writer']);
-
-
-
-        // --------------- User Role -------------------------------
-        Role::create(['name' => 'user']);
     }
 }

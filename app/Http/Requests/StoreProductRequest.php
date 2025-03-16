@@ -26,6 +26,9 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'title' => 'required|min:2',
+            'price' => 'required|min:5',
+            'quantity' => 'required|min:5',
+            'quantity_alert' => 'required|min:5',
             'description' => 'required|min:5',
             'category_id' => 'required',
             'featuredimg' => 'required',
