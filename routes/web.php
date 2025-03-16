@@ -4,6 +4,7 @@ use App\Events\UserRegistered;
 use App\Http\Controllers\cms\AssignRoleController;
 use App\Http\Controllers\cms\ClientController;
 use App\Http\Controllers\cms\CustomerRequestController;
+use App\Http\Controllers\cms\InventoryController;
 use App\Http\Controllers\cms\NotificationController;
 use App\Http\Controllers\cms\PermissionController;
 use App\Http\Controllers\cms\UserController;
@@ -99,6 +100,7 @@ Route::middleware('cms')->group(function () {
         'suppliers' => SupplierController::class,
         'clients' => ClientController::class,
         'customerrequests' => CustomerRequestController::class,
+        'inventories' => InventoryController::class,
 
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
