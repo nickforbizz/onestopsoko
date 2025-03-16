@@ -73,7 +73,7 @@
 
                         <div class="form-group ">
                             <label for="email" class="placeholder"> Email </label>
-                            <input id="name" type="email" class="form-control  @error('email') is-invalid @enderror" name="email"  value="{{ $supplier->email ?? '' }}" placeholder="Enter your value" required />
+                            <input id="name" type="email" class="form-control  @error('email') is-invalid @enderror" name="email"  value="{{ $supplier->email ?? '' }}" placeholder="Enter your value" />
                             @error('email') <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -89,9 +89,9 @@
                         <div class="form-group">
                             <label for="paymentterms"> Payment Terms</label>
                             <select name="paymentterms" id="paymentterms" class="form-control form-control">
-                                <option value="cash">Cash</option>
-                                <option value="M-pesa">M-pesa</option>
-                                <option value="Credit">Credit</option>
+                                <option value="cash" @if($supplier->paymentterms == 'cash') selected @endif >Cash</option>
+                                <option value="M-pesa" @if($supplier->paymentterms == 'M-pesa') selected @endif >M-pesa</option>
+                                <option value="Credit" @if($supplier->paymentterms == 'Credit') selected @endif >Credit</option>
                             </select>
                             @error('paymentterms') <span class="text-danger">{{ $message }}</span>
                             @enderror

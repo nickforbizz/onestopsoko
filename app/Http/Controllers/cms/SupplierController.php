@@ -5,6 +5,7 @@ namespace App\Http\Controllers\cms;
 use App\Http\Controllers\Controller;
 use App\Models\Supplier;
 use App\Http\Requests\StoreSupplierRequest;
+use App\Http\Requests\SupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use Illuminate\Http\Request;
 
@@ -67,9 +68,9 @@ class SupplierController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SupplierRequest $request)
     {
-        Supplier::create($request->all());
+        Supplier::create($request->validated());
         return redirect()->back()->with('success', 'Record Created Successfully');
     }
 
@@ -93,10 +94,10 @@ class SupplierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Supplier $Supplier)
+    public function update(SupplierRequest $request, Supplier $Supplier)
     {
 
-        $Supplier->update($request->all());
+        $Supplier->update($request->validated());
 
         // Redirect the user to the user's profile page
         return redirect()
