@@ -4,17 +4,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
-class StorePermissionRequest extends FormRequest
+class InventoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $user = auth()->user();
-        return $user->hasRole('superadmin');
+        return true;
     }
 
     /**
@@ -25,8 +23,12 @@ class StorePermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'min:2', Rule::unique('permissions')],
-            'guard_name' => 'required|min:2',
+            'quantity_available' => 'required|min:2',
+            'last_updated' => 'required|min:2',
+            'location' => 'nullable',
+            'product_id' => 'required',
+            'active' => 'nullable',
+
         ];
     }
 
@@ -37,12 +39,6 @@ class StorePermissionRequest extends FormRequest
             'required' => 'The :attribute field is required.',
         ];
     }
-
-    protected function prepareForValidation()
-    {
-        // do something before validation
-    }
-
 
     public function passedValidation()
     {

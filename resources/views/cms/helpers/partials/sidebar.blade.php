@@ -55,39 +55,57 @@
 				</li>
 				@endif
 
-				
-
-				<li class="nav-item @if(Route::is('productCategories.*')) active @endif">
-					<a href="{{ route('productCategories.index') }}">
-						<i class="far fa-clone"></i>
-						<p> ProductCategories</p>
-					</a>
-				</li>
-
-				<li class="nav-item @if(Route::is('products.*')) active @endif">
-					<a href="{{ route('products.index') }}">
-						<i class="far fa-edit"></i>
-						<p> Products</p>
-					</a>
-				</li>
 
 				<li class="nav-item @if(Route::is('suppliers.*')) active @endif">
 					<a href="{{ route('suppliers.index') }}">
-						<i class="far fa-edit"></i>
+						<i class="fas fa-user-clock"></i>
 						<p> Supplier</p>
 					</a>
 				</li>
 
 				<li class="nav-item @if(Route::is('clients.*')) active @endif">
 					<a href="{{ route('clients.index') }}">
-						<i class="far fa-edit"></i>
+						<i class="fas fa-user-friends"></i>
 						<p> Clients</p>
+					</a>
+				</li>
+
+				<li class="nav-item @if(Route::is('inventories.*')) active @endif">
+					<a href="{{ route('inventories.index') }}">
+						<i class="far fa-file-alt"></i>
+						<p> Inventory </p>
+					</a>
+				</li>
+				<hr>
+
+				
+
+				<li class="nav-item @if(Route::is('productCategories.*')) active @endif">
+					<a href="{{ route('productCategories.index') }}">
+						<i class="fas fa-chevron-right"></i>
+						<p> Product Categories</p>
+					</a>
+				</li>
+
+				<li class="nav-item @if(Route::is('products.*')) active @endif">
+					<a href="{{ route('products.index') }}">
+						<i class="fas fa-dolly-flatbed"></i>
+						<p> Products</p>
+					</a>
+				</li>
+
+				<hr>
+
+				<li class="nav-item @if(Route::is('customerrequests.*')) active @endif">
+					<a href="{{ route('customerrequests.index') }}">
+						<i class="fas fa-chalkboard-teacher"></i>
+						<p> Customer requests</p>
 					</a>
 				</li>
 
 				<li class="nav-item @if(Route::is('reports.*')) active @endif">
 					<a href="{{ route('reports.index') }}">
-						<i class="far fa-edit"></i>
+						<i class="far fa-chart-bar"></i>
 						<p> Reports</p>
 					</a>
 				</li>
