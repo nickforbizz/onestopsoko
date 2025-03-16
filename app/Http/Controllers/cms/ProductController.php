@@ -13,6 +13,7 @@ use DataTables;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Inventory;
 use App\Models\ProductCategory;
 
 class ProductController extends Controller
@@ -93,8 +94,11 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $image = $request->file('featuredimg');
-        $imageName = store_image($image);
+        $imageName = 'default.png';
+        if ($request->has('featuredimg')) {
+            $image = $request->file('featuredimg');
+            $imageName = store_image($image);
+        }
 
         $product = Product::firstOrCreate(
             [
@@ -113,6 +117,12 @@ class ProductController extends Controller
         );
 
         if ($product) {
+            Inventory::create([
+                'product_id' => $product->id,
+                'quantity_available' => $request->quantity,
+                'last_updated'=> date('Y-m-d H:i:s'),
+                'created_by' => Auth::id(),
+            ]);
             return redirect()
                 ->route('products.index')
                 ->with('success', 'Record Created Successfully');
@@ -157,6 +167,28 @@ class ProductController extends Controller
             'quantity_alert' => $request->quantity_alert,
             'photo' => $imageName,
         ]);
+
+        if ($product) {
+            // check if product has inventory
+            if (!Inventory::where('product_id', $product->id)->count()) {
+                Inventory::create([
+                    'product_id' => $product->id,
+                    'quantity_available' => $request->quantity,
+                    'last_updated'=> date('Y-m-d H:i:s'),
+                    'created_by' => Auth::id(),
+                ]);
+            }else{
+                // update inventory
+                Inventory::where('product_id', $product->id)->update([
+                    'quantity_available' => $product->quantity,
+                    'last_updated'=> date('Y-m-d H:i:s'),
+                    'created_by' => Auth::id(),
+                ]);
+
+            }
+
+            
+        }
 
         return redirect()
             ->route('products.index')
