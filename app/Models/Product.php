@@ -53,6 +53,7 @@ class Product extends Model
 		'description',
 		'price',
 		'quantity',
+		'quantity_alert',
 		'color',
 		'size',
 		'label',

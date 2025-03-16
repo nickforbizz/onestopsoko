@@ -52,7 +52,6 @@
                                     <th>Product</th>
                                     <th>Category</th>
                                     <th>Quantity Available</th>
-                                    <th>Location</th>
                                     <th>Last Updated</th>
                                     <th>Created At</th>
                                     <th>Action</th>
@@ -92,9 +91,6 @@
                 
                 {
                     data: 'quantity_available'
-                },
-                {
-                    data: 'location'
                 },
                 {
                     data: 'last_updated'

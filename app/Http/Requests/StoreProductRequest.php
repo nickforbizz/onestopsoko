@@ -26,12 +26,12 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'title' => 'required|min:2',
-            'price' => 'required|min:5',
-            'quantity' => 'required|min:5',
-            'quantity_alert' => 'required|min:5',
-            'description' => 'required|min:5',
+            'price' => 'required',
+            'quantity' => 'required',
+            'quantity_alert' => 'nullable',
+            'description' => 'nullable',
             'category_id' => 'required',
-            'featuredimg' => 'required',
+            'featuredimg' => 'nullable',
             'slug' => 'unique:products,slug',
         ];
     }

@@ -49,12 +49,13 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Request Type</th>
-                                    <th>Client</th>
-                                    <th>Date Submitted</th>
-                                    <th>status</th>
-                                    <th>Created At</th>
-                                    <th>Action</th>
+                                    <th> Request Type </th>
+                                    <th> Client</th>
+                                    <th> Description </th>
+                                    <th> Date Submitted </th>
+                                    <th> Status </th>
+                                    <th> Created At </th>
+                                    <th> Action </th>
                                 </tr>
                             </thead>
                         </table>
@@ -88,7 +89,9 @@
                 {
                     data: 'client_id'
                 },
-                
+                {
+                    data: 'description'
+                },
                 {
                     data: 'DateSubmitted'
                 },

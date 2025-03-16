@@ -25,11 +25,14 @@ class InventoryController extends Controller
                 ->editColumn('created_at', function ($row) {
                     return date_format($row->created_at, 'Y/m/d H:i');
                 })
-                ->editColumn('product_id', function ($row) {
+                ->editColumn('last_updated', function ($row) {
+                    return date_format($row->last_updated, 'Y/m/d H:i');
+                })
+                ->editColumn('category', function ($row) {
                     return $row->product->product_category->name;
                 })
-                ->addColumn('category', function ($row) {
-                    return $row->product->name;
+                ->addColumn('product_id', function ($row) {
+                    return $row->product->title;
                 })
                 ->addColumn('action', function ($row) {
                     $btn_edit = $btn_del = null;
