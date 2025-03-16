@@ -3,6 +3,7 @@
 use App\Events\UserRegistered;
 use App\Http\Controllers\cms\AssignRoleController;
 use App\Http\Controllers\cms\ClientController;
+use App\Http\Controllers\cms\CustomerRequestController;
 use App\Http\Controllers\cms\NotificationController;
 use App\Http\Controllers\cms\PermissionController;
 use App\Http\Controllers\cms\UserController;
@@ -97,6 +98,7 @@ Route::middleware('cms')->group(function () {
         'productCategories' => ProductCategoryController::class,
         'suppliers' => SupplierController::class,
         'clients' => ClientController::class,
+        'customerrequests' => CustomerRequestController::class,
 
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
@@ -106,10 +108,10 @@ Route::middleware('cms')->group(function () {
     ]);
 
     // CART Routes
-    Route::get('cart', [ProductsController::class, 'cart'])->name('cart');
-    Route::get('add-to-cart/{id}', [ProductsController::class, 'addToCart'])->name('addToCart');
-    Route::patch('update-cart', [ProductsController::class, 'updateCart'])->name('updateCart');
-    Route::delete('remove-from-cart', [ProductsController::class, 'removeCartItem'])->name('removeCartItem');
+    // Route::get('cart', [ProductsController::class, 'cart'])->name('cart');
+    // Route::get('add-to-cart/{id}', [ProductsController::class, 'addToCart'])->name('addToCart');
+    // Route::patch('update-cart', [ProductsController::class, 'updateCart'])->name('updateCart');
+    // Route::delete('remove-from-cart', [ProductsController::class, 'removeCartItem'])->name('removeCartItem');
 
     Route::post('/notifications//mark-as-read', [NotificationController::class, 'markNotification'])->name('notifications.markNotification');
 });
