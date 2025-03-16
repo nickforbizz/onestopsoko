@@ -96,6 +96,15 @@
 
 				<hr>
 
+				<li class="nav-item @if(Route::is('sales.*')) active @endif">
+					<a href="{{ route('sales.index') }}">
+						<i class="fas fa-cart-plus"></i>
+						<p> Sales </p>
+					</a>
+				</li>
+
+				<hr>
+
 				<li class="nav-item @if(Route::is('customerrequests.*')) active @endif">
 					<a href="{{ route('customerrequests.index') }}">
 						<i class="fas fa-chalkboard-teacher"></i>
