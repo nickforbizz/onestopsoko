@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @package App\Models
  */
-class Request extends Model
+class CustomerRequest extends Model
 {
 	use SoftDeletes;
 	protected $table = 'requests';
