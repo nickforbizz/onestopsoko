@@ -44,16 +44,16 @@
 						<div class="col-md-6">
 							<div class="card full-height">
 								<div class="card-body">
-									<div class="card-title">Total income & spend statistics</div>
+									<div class="card-title">Weekly Sales & Daily Sales statistics</div>
 									<div class="row py-3">
 										<div class="col-md-4 d-flex flex-column justify-content-around">
 											<div>
-												<h6 class="fw-bold text-uppercase text-success op-8">Total Income</h6>
-												<h3 class="fw-bold">$9.782</h3>
+												<h6 class="fw-bold text-uppercase text-success op-8">Weekly Sales</h6>
+												<h3 class="fw-bold"> Ksh {{ $weeklySales }} </h3>
 											</div>
 											<div>
-												<h6 class="fw-bold text-uppercase text-danger op-8">Total Spend</h6>
-												<h3 class="fw-bold">$1,248</h3>
+												<h6 class="fw-bold text-uppercase text-danger op-8">Today's Sale</h6>
+												<h3 class="fw-bold">Ksh {{ $dailySales }}</h3>
 											</div>
 										</div>
 										<div class="col-md-8">
@@ -100,22 +100,19 @@
 							<div class="card card-primary">
 								<div class="card-header">
 									<div class="card-title">Daily Sales</div>
-									<div class="card-category">March 25 - April 02</div>
+									<div class="card-category"> {{ \Carbon\Carbon::today()->toDateString() }}</div>
 								</div>
 								<div class="card-body pb-0">
-									<div class="mb-4 mt-2">
-										<h1>$4,578.58</h1>
-									</div>
-									<div class="pull-in">
-										<canvas id="dailySalesChart"></canvas>
+									<div class="mb-2 mt-2">
+										<h1>Ksh {{ $dailySales }} </h1>
 									</div>
 								</div>
 							</div>
 							<div class="card">
 								<div class="card-body pb-0">
 									<div class="h1 fw-bold float-right text-warning">+7%</div>
-									<h2 class="mb-2">213</h2>
-									<p class="text-muted">Transactions</p>
+									<h2 class="mb-2">Ksh {{ $weeklySales }}</h2>
+									<p class="text-muted">Weekly Sales</p>
 									<div class="pull-in sparkline-fix">
 										<div id="lineChart"></div>
 									</div>
@@ -124,7 +121,7 @@
 						</div>
 					</div>
 					
-					
+					{{ $lastWeekTrends }}
 					<div class="row">
 						<div class="col-md-4">
 							<div class="card">
@@ -452,16 +449,18 @@ Circles.create({
 		})
 
 		var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+		let weekly_sales = {!! $lastWeekTrends !!};
+		const totalSalesArray = weekly_sales.map(item => Number(item.total_sales));
 
 		var mytotalIncomeChart = new Chart(totalIncomeChart, {
 			type: 'bar',
 			data: {
 				labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
 				datasets : [{
-					label: "Total Income",
+					label: "Weekly Sales Trends",
 					backgroundColor: '#ff9e27',
 					borderColor: 'rgb(23, 125, 255)',
-					data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+					data: totalSalesArray,
 				}],
 			},
 			options: {
@@ -490,7 +489,9 @@ Circles.create({
 			}
 		});
 
-		$('#lineChart').sparkline([105,103,123,100,95,105,115], {
+		
+		
+		$('#lineChart').sparkline(totalSalesArray, {
 			type: 'line',
 			height: '70',
 			width: '100%',
