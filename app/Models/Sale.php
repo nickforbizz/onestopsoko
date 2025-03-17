@@ -41,6 +41,7 @@ class Sale extends Model
 		'client_id' => 'int',
 		'sales_date' => 'date',
 		'amount' => 'int',
+		'quantity' => 'int',
 		'created_by' => 'int',
 		'active' => 'int'
 	];
@@ -50,6 +51,8 @@ class Sale extends Model
 		'client_id',
 		'sales_date',
 		'amount',
+		'total_amount',
+		'quantity',
 		'status',
 		'created_by',
 		'active'

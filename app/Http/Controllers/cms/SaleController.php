@@ -4,6 +4,8 @@ namespace App\Http\Controllers\cms;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaleRequest;
+use App\Models\Client;
+use App\Models\Inventory;
 use Illuminate\Http\Request;
 
 use App\Models\Sale;
@@ -24,6 +26,9 @@ class SaleController extends Controller
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {
                     return date_format($row->created_at, 'Y/m/d H:i');
+                })
+                ->editColumn('sales_date', function ($row) {
+                    return date_format($row->sales_date, 'Y/m/d H:i');
                 })
                 ->editColumn('product_id', function ($row) {
                     return $row->product->title;
@@ -68,7 +73,8 @@ class SaleController extends Controller
     public function create()
     {
         $products = Product::orderBy('title', 'asc')->get();
-        return view('cms.sales.create', compact('products'));
+        $clients = Client::orderBy('name', 'asc')->get();
+        return view('cms.sales.create', compact('products', 'clients'));
     }
 
     /**
@@ -76,7 +82,27 @@ class SaleController extends Controller
      */
     public function store(SaleRequest $request)
     {
-        Sale::create($request->validated());
+        // dd($request->validated());
+        $record = Sale::create($request->validated());
+
+        if($record){
+            // update the product quantity
+            $product = Product::find($request->product_id);
+            $product->quantity = $product->quantity - $request->quantity;
+            $product->save();
+
+            // Find and Update inventory
+            $inventory = Inventory::where('product_id', $request->product_id)->first();
+            if($inventory){
+                $inventory->quantity_available =  $product->quantity;
+                $inventory->save();
+            }else{
+                Inventory::create([
+                    'product_id' => $request->product_id,
+                    'quantity_available' => $product->quantity
+                ]);
+            }
+        }
         return redirect()->back()->with('success', 'Record Created Successfully');
     }
 
@@ -95,7 +121,8 @@ class SaleController extends Controller
     public function edit(Sale $sale)
     {     
         $products = Product::orderBy('title', 'asc')->get();
-        return view('cms.sales.create', compact('sale', 'products'));
+        $clients = Client::orderBy('name', 'asc')->get();
+        return view('cms.sales.create', compact('sale', 'products', 'clients'));
     }
 
     /**
@@ -103,8 +130,27 @@ class SaleController extends Controller
      */
     public function update(SaleRequest $request, Sale $sale)
     {
+        $sale_old = Sale::find($sale->id);
+        
 
-        $sale->update($request->validated());
+        if($sale->update($request->validated())){
+            // update the product quantity
+            $product = Product::find($request->product_id);
+            $product->quantity =( $product->quantity + $sale_old->quantity) - $request->quantity;
+            $product->save();
+
+            // Find and Update inventory
+            $inventory = Inventory::where('product_id', $request->product_id)->first();
+            if($inventory){
+                $inventory->quantity_available =  $product->quantity;
+                $inventory->save();
+            }else{
+                Inventory::create([
+                    'product_id' => $request->product_id,
+                    'quantity_available' => $product->quantity
+                ]);
+            }
+        }
 
         // Redirect the user to the user's profile page
         return redirect()

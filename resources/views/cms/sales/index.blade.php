@@ -52,7 +52,9 @@
                                     <th> Product </th>
                                     <th> Client</th>
                                     <th> Sales Date </th>
+                                    <th> Quantity </th>
                                     <th> Amount </th>
+                                    <th> Total Amount </th>
                                     <th> Status </th>
                                     <th> Created At </th>
                                     <th> Action </th>
@@ -93,7 +95,13 @@
                     data: 'sales_date'
                 },
                 {
+                    data: 'quantity'
+                },
+                {
                     data: 'amount'
+                },
+                {
+                    data: 'total_amount'
                 },
                 {
                     data: 'status'
