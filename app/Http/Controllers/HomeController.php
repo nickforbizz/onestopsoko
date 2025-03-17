@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sale;
+use App\Models\Supply;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -90,9 +91,35 @@ class HomeController extends Controller
             ->orderBy('date')
             ->get();
 
-        // dd( $weeklySales);
-        return view('cms.index', 
-            compact('dailySales', 'dailySales_quantity', 'weeklySales', 'weeklySales_quantity',
-            'monthlySales','monthlySales_quantity',  'quarterlySales', 'yearlySales', 'lastWeekTrends', 'lastMonthTrends'));
+        $lastMonthSupplies = Supply::select(DB::raw('DATE(supply_date) as date'), DB::raw('SUM(total_amount) as total_sales'))
+            ->where('supply_date', '>=', Carbon::now()->subMonth())
+            ->groupBy(DB::raw('DATE(supply_date)'))
+            ->orderBy('date')
+            ->get();
+
+
+        $topProductsSold = Sale::orderByDesc('quantity')
+            ->with(['product' => ['product_category']])
+            ->limit(6)
+            ->get();
+
+        // dd( $topProductsSold);
+        return view(
+            'cms.index',
+            compact(
+                'dailySales',
+                'dailySales_quantity',
+                'weeklySales',
+                'weeklySales_quantity',
+                'monthlySales',
+                'monthlySales_quantity',
+                'quarterlySales',
+                'yearlySales',
+                'lastWeekTrends',
+                'lastMonthTrends',
+                'lastMonthSupplies',
+                'topProductsSold',
+            )
+        );
     }
 }

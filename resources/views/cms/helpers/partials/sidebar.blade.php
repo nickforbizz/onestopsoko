@@ -63,6 +63,15 @@
 					</a>
 				</li>
 
+				<li class="nav-item @if(Route::is('supplies.*')) active @endif">
+					<a href="{{ route('supplies.index') }}">
+						<i class="fas fa-clipboard-list"></i>
+						<p> Supplies</p>
+					</a>
+				</li>
+
+				<hr>
+
 				<li class="nav-item @if(Route::is('clients.*')) active @endif">
 					<a href="{{ route('clients.index') }}">
 						<i class="fas fa-user-friends"></i>
