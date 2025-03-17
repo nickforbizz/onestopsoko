@@ -17,6 +17,7 @@ use App\Http\Controllers\cms\RoleController;
 use App\Http\Controllers\cms\SaleController;
 use App\Http\Controllers\cms\SearchController;
 use App\Http\Controllers\cms\SupplierController;
+use App\Http\Controllers\cms\SupplyController;
 use App\Http\Controllers\frontend\ViewsController;
 use App\Http\Controllers\HomeController;
 use App\Models\User;
@@ -99,6 +100,7 @@ Route::middleware('cms')->group(function () {
         'products' => ProductController::class,
         'productCategories' => ProductCategoryController::class,
         'suppliers' => SupplierController::class,
+        'supplies' => SupplyController::class,
         'clients' => ClientController::class,
         'customerrequests' => CustomerRequestController::class,
         'inventories' => InventoryController::class,
