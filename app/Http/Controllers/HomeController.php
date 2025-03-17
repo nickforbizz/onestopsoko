@@ -47,14 +47,26 @@ class HomeController extends Controller
         $dailySales = Sale::whereDate('sales_date', Carbon::today())
             ->sum('total_amount');
 
+        $dailySales_quantity = Sale::whereDate('sales_date', Carbon::today())
+            ->sum('quantity');
+
         $weeklySales = Sale::whereBetween('sales_date', [
             Carbon::now()->startOfWeek(),
             Carbon::now()->endOfWeek()
         ])->sum('total_amount');
 
+        $weeklySales_quantity = Sale::whereBetween('sales_date', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek()
+        ])->sum('quantity');
+
         $monthlySales = Sale::whereYear('sales_date', Carbon::now()->year)
             ->whereMonth('sales_date', Carbon::now()->month)
             ->sum('total_amount');
+
+        $monthlySales_quantity = Sale::whereYear('sales_date', Carbon::now()->year)
+            ->whereMonth('sales_date', Carbon::now()->month)
+            ->sum('quantity');
 
         $quarterlySales = Sale::whereBetween('sales_date', [
             Carbon::now()->startOfQuarter(),
@@ -72,7 +84,15 @@ class HomeController extends Controller
             ->get();
 
 
+        $lastMonthTrends = Sale::select(DB::raw('DATE(sales_date) as date'), DB::raw('SUM(total_amount) as total_sales'))
+            ->where('sales_date', '>=', Carbon::now()->subMonth())
+            ->groupBy(DB::raw('DATE(sales_date)'))
+            ->orderBy('date')
+            ->get();
+
         // dd( $weeklySales);
-        return view('cms.index', compact('dailySales', 'weeklySales', 'monthlySales', 'quarterlySales', 'yearlySales', 'lastWeekTrends'));
+        return view('cms.index', 
+            compact('dailySales', 'dailySales_quantity', 'weeklySales', 'weeklySales_quantity',
+            'monthlySales','monthlySales_quantity',  'quarterlySales', 'yearlySales', 'lastWeekTrends', 'lastMonthTrends'));
     }
 }
