@@ -5,6 +5,8 @@ namespace App\Http\Controllers\cms;
 use App\Exports\PostReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
+use App\Models\Sale;
+use App\Models\Supply;
 use App\Models\User;
 use App\Services\ReportService;
 use Illuminate\Http\Request;
@@ -24,13 +26,27 @@ class ReportController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-        
+
+        $lastYearSalesTrends = Sale::select(DB::raw('DATE(sales_date) as date'), DB::raw('SUM(total_amount) as total_sales'))
+            ->where('sales_date', '>=', Carbon::now()->subYear())
+            ->groupBy(DB::raw('DATE(sales_date)'))
+            ->orderBy('date')
+            ->get();
+
+        $lastYearSuppliesTrends = Supply::select(DB::raw('DATE(supply_date) as date'), DB::raw('SUM(total_amount) as total_supplies'))
+            ->where('supply_date', '>=', Carbon::now()->subYear())
+            ->groupBy(DB::raw('DATE(supply_date)'))
+            ->orderBy('date')
+            ->get();
+
         return view('cms.reports.index', [
             'postsChartData' => $posts_report['chartData'],
             'postsYears' => $posts_report['years'],
             'usersChartData' => $users_report['chartData'],
             'usersYears' => $users_report['years'],
-            'selectedYear' => $selectedYear
+            'selectedYear' => $selectedYear,
+            'lastYearSalesTrends' => $lastYearSalesTrends,
+            'lastYearSuppliesTrends' => $lastYearSuppliesTrends,
         ]);
     }
 
@@ -39,22 +55,20 @@ class ReportController extends Controller
     {
         $year = request('year', Carbon::now()->year);
         $data = Post::select(DB::raw('MONTH(created_at) as month'), DB::raw('COUNT(*) as count'))
-                    ->whereYear('created_at', $year)
-                    ->groupBy('month')
-                    ->get();
-    
+            ->whereYear('created_at', $year)
+            ->groupBy('month')
+            ->get();
+
         $chartData = [];
         foreach ($data as $row) {
             $month = Carbon::create(null, $row->month)->format('F');
             $chartData[$month] = $row->count;
         }
-    
-        $fileName = 'post_report_'.$year;
-    
-        $export = new PostReportExport($data);
-    
-        return Excel::download($export, $fileName.'.xlsx');
-    
-    }
 
+        $fileName = 'post_report_' . $year;
+
+        $export = new PostReportExport($data);
+
+        return Excel::download($export, $fileName . '.xlsx');
+    }
 }
