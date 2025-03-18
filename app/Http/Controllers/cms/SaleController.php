@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Sale;
 use App\Models\Product;
+use App\Models\Wallet;
+use App\Models\WalletTransaction;
 use DataTables;
 
 class SaleController extends Controller
@@ -83,9 +85,9 @@ class SaleController extends Controller
     public function store(SaleRequest $request)
     {
         // dd($request->validated());
-        $record = Sale::create($request->validated());
+        $sale = Sale::create($request->validated());
 
-        if($record){
+        if ($sale) {
             // update the product quantity
             $product = Product::find($request->product_id);
             $product->quantity = $product->quantity - $request->quantity;
@@ -93,15 +95,25 @@ class SaleController extends Controller
 
             // Find and Update inventory
             $inventory = Inventory::where('product_id', $request->product_id)->first();
-            if($inventory){
+            if ($inventory) {
                 $inventory->quantity_available =  $product->quantity;
                 $inventory->save();
-            }else{
+            } else {
                 Inventory::create([
                     'product_id' => $request->product_id,
                     'quantity_available' => $product->quantity
                 ]);
             }
+
+            // update wallet and create transaction
+            $wallet = Wallet::first();
+            // Create a transaction: type 'sale' adds funds (positive amount)
+            WalletTransaction::create([
+                'wallet_id'   => $wallet->id,
+                'transaction_type'  => 'sale',
+                'amount'      => $sale->total_amount, // positive amount
+                'description' => 'Sale ID: ' . $sale->id,
+            ]);
         }
         return redirect()->back()->with('success', 'Record Created Successfully');
     }
@@ -119,7 +131,7 @@ class SaleController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Sale $sale)
-    {     
+    {
         $products = Product::orderBy('title', 'asc')->get();
         $clients = Client::orderBy('name', 'asc')->get();
         return view('cms.sales.create', compact('sale', 'products', 'clients'));
@@ -131,24 +143,40 @@ class SaleController extends Controller
     public function update(SaleRequest $request, Sale $sale)
     {
         $sale_old = Sale::find($sale->id);
-        
 
-        if($sale->update($request->validated())){
+
+        if ($sale->update($request->validated())) {
             // update the product quantity
             $product = Product::find($request->product_id);
-            $product->quantity =( $product->quantity + $sale_old->quantity) - $request->quantity;
+            $product->quantity = ($product->quantity + $sale_old->quantity) - $request->quantity;
             $product->save();
 
             // Find and Update inventory
             $inventory = Inventory::where('product_id', $request->product_id)->first();
-            if($inventory){
+            if ($inventory) {
                 $inventory->quantity_available =  $product->quantity;
                 $inventory->save();
-            }else{
+            } else {
                 Inventory::create([
                     'product_id' => $request->product_id,
                     'quantity_available' => $product->quantity
                 ]);
+            }
+
+            $difference = $sale->total_amount - $sale_old->total_amount;
+            if($difference != 0) {
+                // update wallet and create transaction
+                $wallet = Wallet::first();
+                // Create a transaction: type 'sale' adds funds (positive amount)
+                WalletTransaction::create([
+                    'wallet_id'   => $wallet->id,
+                    'transaction_type'  => 'sale_adjustment',
+                    'amount'      => $difference, // positive amount
+                    'description' => 'Sale ID: ' . $sale->id,
+                ]);
+                 // Update the wallet balance accordingly
+                $wallet->balance += $difference;
+                $wallet->save();
             }
         }
 

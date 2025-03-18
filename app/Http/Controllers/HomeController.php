@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sale;
 use App\Models\Supply;
+use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -45,6 +46,10 @@ class HomeController extends Controller
      */
     public function cms()
     {
+
+        $wallet = Wallet::first();
+        $currentBalance = $wallet->balance;
+
         $dailySales = Sale::whereDate('sales_date', Carbon::today())
             ->sum('total_amount');
 
@@ -107,6 +112,7 @@ class HomeController extends Controller
         return view(
             'cms.index',
             compact(
+                'currentBalance',
                 'dailySales',
                 'dailySales_quantity',
                 'weeklySales',
