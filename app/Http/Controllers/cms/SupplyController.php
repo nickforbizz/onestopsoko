@@ -13,6 +13,8 @@ use App\Models\Sale;
 use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Supply;
+use App\Models\Wallet;
+use App\Models\WalletTransaction;
 use DataTables;
 
 class SupplyController extends Controller
@@ -86,9 +88,9 @@ class SupplyController extends Controller
     public function store(SupplyRequest $request)
     {
         // dd($request->validated());
-        $record = Supply::create($request->validated());
+        $supply = Supply::create($request->validated());
 
-        if($record){
+        if ($supply) {
             // update the product quantity
             $product = Product::find($request->product_id);
             $product->quantity = $product->quantity + $request->quantity;
@@ -97,15 +99,25 @@ class SupplyController extends Controller
 
             // Find and Update inventory
             $inventory = Inventory::where('product_id', $request->product_id)->first();
-            if($inventory){
+            if ($inventory) {
                 $inventory->quantity_available =  $product->quantity;
                 $inventory->save();
-            }else{
+            } else {
                 Inventory::create([
                     'product_id' => $request->product_id,
                     'quantity_available' => $product->quantity
                 ]);
             }
+
+            $wallet = Wallet::first();
+
+            // Create a transaction: type 'expense' deducts funds (negative amount)
+            WalletTransaction::create([
+                'wallet_id'   => $wallet->id,
+                'transaction_type'        => 'expense',
+                'amount'      => - ($supply->cost), // deduct cost from wallet
+                'description' => 'Supply purchase ID: ' . $supply->id,
+            ]);
         }
         return redirect()->back()->with('success', 'Record Created Successfully');
     }
@@ -123,7 +135,7 @@ class SupplyController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Supply $supply)
-    {     
+    {
         $products = Product::orderBy('title', 'asc')->get();
         $suppliers = Supplier::orderBy('name', 'asc')->get();
         return view('cms.supplies.create', compact('supply', 'products', 'suppliers'));
@@ -135,25 +147,41 @@ class SupplyController extends Controller
     public function update(SupplyRequest $request, Supply $supply)
     {
         $supply_old = Supply::find($supply->id);
-        
 
-        if($supply->update($request->validated())){
+
+        if ($supply->update($request->validated())) {
             // update the product quantity
             $product = Product::find($request->product_id);
-            $product->quantity =( $product->quantity - $supply_old->quantity) + $request->quantity;
+            $product->quantity = ($product->quantity - $supply_old->quantity) + $request->quantity;
             $product->cost =  $request->amount;
             $product->save();
 
             // Find and Update inventory
             $inventory = Inventory::where('product_id', $request->product_id)->first();
-            if($inventory){
+            if ($inventory) {
                 $inventory->quantity_available =  $product->quantity;
                 $inventory->save();
-            }else{
+            } else {
                 Inventory::create([
                     'product_id' => $request->product_id,
                     'quantity_available' => $product->quantity
                 ]);
+            }
+
+            $difference = $supply->total_amount - $supply_old->total_amount;
+            if($difference != 0) {
+                // update wallet and create transaction
+                $wallet = Wallet::first();
+                // Create a transaction: type 'supply' adds funds (positive amount)
+                WalletTransaction::create([
+                    'wallet_id'   => $wallet->id,
+                    'transaction_type'  => 'supply_adjustment',
+                    'amount'      => $difference, // positive amount
+                    'description' => 'supply ID: ' . $supply->id,
+                ]);
+                 // Update the wallet balance accordingly
+                $wallet->balance -= $difference;
+                $wallet->save();
             }
         }
 
@@ -175,7 +203,7 @@ class SupplyController extends Controller
 
         // Find and Update inventory
         $inventory = Inventory::where('product_id', $supply->product_id)->first();
-        if($inventory){
+        if ($inventory) {
             $inventory->quantity_available =  $product->quantity;
             $inventory->save();
         }

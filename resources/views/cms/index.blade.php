@@ -97,6 +97,7 @@
 			</div>
 		</div>
 		<div class="col-md-4">
+
 			<div class="card card-primary">
 				<div class="card-header">
 					<div class="card-title">Daily Sales</div>
@@ -108,9 +109,9 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="card">
 				<div class="card-body pb-0">
-					<div class="h1 fw-bold float-right text-warning">+7%</div>
 					<h2 class="mb-2">Ksh {{ $weeklySales }}</h2>
 					<p class="text-muted">Weekly Sales</p>
 					<div class="pull-in sparkline-fix">
@@ -118,6 +119,19 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="card card-success">
+				<div class="card-header">
+					<div class="card-title">Wallet </div>
+					<div class="card-category"> Currrent Balance</div>
+				</div>
+				<div class="card-body pb-0">
+					<div class="mb-2 mt-2">
+						<h1>Ksh  {{ $currentBalance }} </h1>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 
