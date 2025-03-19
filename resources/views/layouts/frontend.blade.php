@@ -81,7 +81,7 @@
                         </li>
                         @endif
                         <li class="nav-item mr-3">
-                            <a class="nav-link scroll-nav-link" href="{{ url('blogs') }}">Blog</a>
+                            <a class="nav-link scroll-nav-link" href="{{ route('login') }}">Login</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link scroll-nav-link" href="#support">Support</a>
