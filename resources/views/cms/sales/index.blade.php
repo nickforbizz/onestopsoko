@@ -37,14 +37,64 @@
                             <i class="flaticon-add mr-2"></i>
                             Add Row
                         </a> 
-                        @endcan
+                        @endcan 
+                       
                     </div>
                 </div>
                 <div class="card-body">
                    
-
+                <div class="ml-auto">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header bg-info text-white" style="font-size: large;">
+                                            Today
+                                        </div>
+                                        <div class="card-body ">
+                                            <h5 class="card-title ">Sales: {{ $salesStats['today']['sales'] }} /= </h5>
+                                            <p class="card-text">Quantity: {{ $salesStats['today']['quantity'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header bg-info text-white" style="font-size: large;">
+                                            Weekly
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Sales: {{ $salesStats['weekly']['sales'] }} /= </h5>
+                                            <p class="card-text">Quantity: {{ $salesStats['weekly']['quantity'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-header bg-info text-white" style="font-size: large;">
+                                            Monthly
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Sales: {{ $salesStats['monthly']['sales'] }} /= </h5>
+                                            <p class="card-text">Quantity: {{ $salesStats['monthly']['quantity'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     <div class="table-responsive">
                         @include('cms.helpers.partials.feedback')
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="today_records">Filter Records</label>
+                                    <select class="form-control" id="today_records" name="today_records">
+                                        <option value="">All</option>
+                                        <option value="1">Today</option>
+                                        <option value="2">This Week</option>
+                                        <option value="3">This Month</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <table id="tb_sales" class="display table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -77,51 +127,69 @@
 
 <script>
     $(document).ready(function() {
-        $('#tb_sales').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('sales.index') }}",
-            columns: [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'product_id'
-                },
-                {
-                    data: 'client_id'
-                },
-                {
-                    data: 'sales_date'
-                },
-                {
-                    data: 'quantity'
-                },
-                {
-                    data: 'amount'
-                },
-                {
-                    data: 'total_amount'
-                },
-                {
-                    data: 'status'
-                },
-					
-                {
-                    data: 'created_at',
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: true,
-                    searchable: true
-                },
-            ]
+        salesRecords()
+        $('#today_records').change(function() {
+            let filterValue = $(this).val().trim();
+            if (filterValue === "1" || filterValue === "") {
+                salesRecords(filterValue);
+            } else {
+                console.error("Invalid filter value");
+            }
         });
         // #tb_sales
 
        
     });
+
+    function salesRecords(today_records='') {
+        $('#tb_sales').DataTable().destroy();
+        $('#tb_sales').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+            url: "{{ route('sales.index') }}",
+            data: function (d) {
+                d.today_records = today_records
+            }
+            },
+            columns: [{
+                data: 'DT_RowIndex',
+                name: 'DT_RowIndex'
+            },
+            {
+                data: 'product_id'
+            },
+            {
+                data: 'client_id'
+            },
+            {
+                data: 'sales_date'
+            },
+            {
+                data: 'quantity'
+            },
+            {
+                data: 'amount'
+            },
+            {
+                data: 'total_amount'
+            },
+            {
+                data: 'status'
+            },
+                        
+            {
+                data: 'created_at',
+            },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: true,
+                searchable: true
+            },
+            ]
+        });
+    }
 
 
     
