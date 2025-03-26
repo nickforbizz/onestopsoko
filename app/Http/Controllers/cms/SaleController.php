@@ -24,9 +24,27 @@ class SaleController extends Controller
         // return datatable of the makes available
         $data = Sale::orderBy('created_at', 'desc');
 
-        if ($request->input('today_records')==1) {
+        // Today's Records
+        if ($request->input('date_selected_records')==1) {
             $data->whereDate('created_at', today());
         }
+
+        // Weekly's Record
+        if ($request->input('date_selected_records')==2) {
+            $data->whereDate('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        }
+
+        // Monthly's Record
+        if ($request->input('date_selected_records')==3) {
+            $data->whereMonth('created_at', now()->month);
+        }
+
+        // Yearly's Record
+        if ($request->input('date_selected_records')==4) {
+            $data->whereYear('created_at', now()->year);
+        }
+
+        // Search)
 
         $data = $data->get();
 
