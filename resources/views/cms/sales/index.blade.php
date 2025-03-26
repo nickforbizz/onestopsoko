@@ -25,76 +25,81 @@
         </ul>
     </div>
     <div class="row">
-   
+
 
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-center"> 
-                        <h4 class="card-title">List of Available Record(s)</h4>
-                        @can('create sale')
-                        <a href="{{ route('sales.create') }}" class="btn btn-primary btn-round ml-auto" >
-                            <i class="flaticon-add mr-2"></i>
-                            Add Row
-                        </a> 
-                        @endcan 
-                       
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">List of Available Record(s)</h4>                      
                     </div>
                 </div>
                 <div class="card-body">
-                   
-                <div class="ml-auto">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-header bg-info text-white" style="font-size: large;">
-                                            Today
-                                        </div>
-                                        <div class="card-body ">
-                                            <h5 class="card-title ">Sales: {{ $salesStats['today']['sales'] }} /= </h5>
-                                            <p class="card-text">Quantity: {{ $salesStats['today']['quantity'] }}</p>
-                                        </div>
+
+                    <div class="ml-auto">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white" style="font-size: large;">
+                                        Today
+                                    </div>
+                                    <div class="card-body ">
+                                        <h5 class="card-title ">Sales: {{ $salesStats['today']['sales'] }} /= </h5>
+                                        <p class="card-text">Quantity: {{ $salesStats['today']['quantity'] }}</p>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-header bg-info text-white" style="font-size: large;">
-                                            Weekly
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">Sales: {{ $salesStats['weekly']['sales'] }} /= </h5>
-                                            <p class="card-text">Quantity: {{ $salesStats['weekly']['quantity'] }}</p>
-                                        </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white" style="font-size: large;">
+                                        Weekly
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Sales: {{ $salesStats['weekly']['sales'] }} /= </h5>
+                                        <p class="card-text">Quantity: {{ $salesStats['weekly']['quantity'] }}</p>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-header bg-info text-white" style="font-size: large;">
-                                            Monthly
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">Sales: {{ $salesStats['monthly']['sales'] }} /= </h5>
-                                            <p class="card-text">Quantity: {{ $salesStats['monthly']['quantity'] }}</p>
-                                        </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white" style="font-size: large;">
+                                        Monthly
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Sales: {{ $salesStats['monthly']['sales'] }} /= </h5>
+                                        <p class="card-text">Quantity: {{ $salesStats['monthly']['quantity'] }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row">
+                            @can('create sale')
+                            <a href="{{ route('sales.create') }}" class="btn btn-primary btn-round ml-auto mr-4">
+                                <i class="flaticon-add mr-4"></i>
+                                Add Sale
+                            </a>
+                            @endcan
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         @include('cms.helpers.partials.feedback')
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="today_records">Filter Records</label>
-                                    <select class="form-control" id="today_records" name="today_records">
+                                    <label for="date_selected_records">Filter Records</label>
+                                    <select class="form-control" id="date_selected_records" name="date_selected_records">
                                         <option value="">All</option>
                                         <option value="1">Today</option>
                                         <option value="2">This Week</option>
                                         <option value="3">This Month</option>
+                                        <option value="4">This Year</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
+
+
                         <table id="tb_sales" class="display table table-striped table-hover">
                             <thead>
                                 <tr>
@@ -128,9 +133,9 @@
 <script>
     $(document).ready(function() {
         salesRecords()
-        $('#today_records').change(function() {
+        $('#date_selected_records').change(function() {
             let filterValue = $(this).val().trim();
-            if (filterValue === "1" || filterValue === "") {
+            if (filterValue === "1" || filterValue === "2" || filterValue === "3" || filterValue === "4" || filterValue === "") {
                 salesRecords(filterValue);
             } else {
                 console.error("Invalid filter value");
@@ -138,61 +143,58 @@
         });
         // #tb_sales
 
-       
+
     });
 
-    function salesRecords(today_records='') {
+    function salesRecords(date_selected_records = '') {
         $('#tb_sales').DataTable().destroy();
         $('#tb_sales').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-            url: "{{ route('sales.index') }}",
-            data: function (d) {
-                d.today_records = today_records
-            }
+                url: "{{ route('sales.index') }}",
+                data: function(d) {
+                    d.date_selected_records = date_selected_records
+                }
             },
             columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex'
-            },
-            {
-                data: 'product_id'
-            },
-            {
-                data: 'client_id'
-            },
-            {
-                data: 'sales_date'
-            },
-            {
-                data: 'quantity'
-            },
-            {
-                data: 'amount'
-            },
-            {
-                data: 'total_amount'
-            },
-            {
-                data: 'status'
-            },
-                        
-            {
-                data: 'created_at',
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: true,
-                searchable: true
-            },
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'product_id'
+                },
+                {
+                    data: 'client_id'
+                },
+                {
+                    data: 'sales_date'
+                },
+                {
+                    data: 'quantity'
+                },
+                {
+                    data: 'amount'
+                },
+                {
+                    data: 'total_amount'
+                },
+                {
+                    data: 'status'
+                },
+
+                {
+                    data: 'created_at',
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: true,
+                    searchable: true
+                },
             ]
         });
     }
-
-
-    
 </script>
 
 @endpush
