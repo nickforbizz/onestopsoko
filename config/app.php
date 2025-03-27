@@ -125,6 +125,9 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'report_recipient' => env('REPORT_RECIPIENT'),
+    'manager_email' => env('MANAGER_EMAIL'),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
