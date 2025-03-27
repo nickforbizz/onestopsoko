@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\Product;
+use App\Models\Sale;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class ViewsController extends Controller
@@ -13,9 +16,33 @@ class ViewsController extends Controller
     public function index(Request $request)
     {
         $products = Product::where('active', 1)->get();
-        $posts = Post::where('active', 1)->orderBy('created_at', 'desc')->take(3)->get();
+        
 
-        return view('frontend.index', compact('products', 'posts'));
+        // Get totalSales
+        $totalSales = Sale::where(function ($query) {
+            $query->whereNull('active')
+              ->orWhere('active', 1);
+        })->sum('total_amount');
+
+        // Get totalProducts
+        $totalProducts = Product::where(function ($query) {
+            $query->whereNull('active')
+              ->orWhere('active', 1);
+        })->count();
+
+        // Get totalClients
+        $totalClients = Client::where(function ($query) {
+            $query->whereNull('active')
+              ->orWhere('active', 1);
+        })->count();
+        
+
+        // Get totalSuppliers
+        $totalSuppliers = Supplier::where(function ($query) {
+            $query->whereNull('active')
+              ->orWhere('active', 1);
+        })->count();
+        return view('frontend.index', compact('totalSales', 'totalProducts', 'totalClients', 'totalSuppliers'));
     }
 
 

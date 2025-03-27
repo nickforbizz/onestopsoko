@@ -52,8 +52,8 @@
             <div class="container">
                 <!-- Logo -->
                 <a class="navbar-brand nb-two" href="{{ route('wellcome') }}">
-                    <img src="{{ asset('assets/frontend/img/logo.png') }}" alt="{{ env('APP_NAME') }}" class="logo-normal">
-                    <img src="{{ asset('assets/frontend/img/logo-white.png') }}" alt="{{ env('APP_NAME') }}" class="logo-scroll">
+                    <img src="{{ asset('assets/frontend/img/logo-removebg.png') }}" alt="{{ env('APP_NAME') }}" class="logo-normal">
+                    <img src="{{ asset('assets/frontend/img/logo-removebg.png') }}" alt="{{ env('APP_NAME') }}" class="logo-scroll">
                 </a>
                 <!-- Navigation Button -->
                 <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,7 +112,7 @@
                 <div class="col-lg-6 col-md-8 mx-auto mt-5">
                     <!-- Footer logo -->
 					<div class="text-center mx-auto mb-4">
-						<img src="{{ asset('assets/frontend/img/logo-white.png') }}" alt="Footer logo" class="d-inline">
+						<img src="{{ asset('assets/frontend/img/logo-removebg.png') }}" height="150px" alt="Footer logo" class="d-inline">
 					</div>
                     <!-- Subscription Start -->
                     <div id="subscribe-frm">

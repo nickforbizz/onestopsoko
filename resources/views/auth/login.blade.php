@@ -2,20 +2,20 @@
 
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center mt-5">
 
 
-        <div class="col-6" 
+        <div class="col-md-6 d-none d-md-block" 
             style="background-image: url('{{ asset('assets/frontend/img/heroimg.png') }}');
-                background-size:contain;
-                background-repeat: no-repeat;">
+            background-size:contain;
+            background-repeat: no-repeat;">
             
         </div>
 
 
-        <div class="col-6">
+        <div class="col-md-6">
             <div class="card" style="max-height:70vh">
-                <div class="card-header"> <h3 class="text-muted">{{ __('Login') }}</h3></div>
+                <div class="card-header bg-info "> <h3 class="text-white">{{ __('Login') }}</h3></div>
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
